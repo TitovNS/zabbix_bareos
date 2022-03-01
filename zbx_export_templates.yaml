@@ -1,0 +1,36 @@
+zabbix_export:
+  version: '5.4'
+  date: '2022-03-01T02:36:33Z'
+  groups:
+    -
+      uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    -
+      uuid: 1c8e18fedf45476291a0d84d82b25f10
+      template: 'BareOS Template'
+      name: 'BareOS Template'
+      groups:
+        -
+          name: Templates
+      discovery_rules:
+        -
+          uuid: cff86538230e48f6b306dce7238ccaf9
+          name: 'Bareos get clients'
+          key: bareos.discover
+          delay: '24h;5m/1-7,22:30-23:45'
+          item_prototypes:
+            -
+              uuid: 2fcb6673ad3742dab5c6dc0c1e969354
+              name: '{#CLIENT} - Status last job:'
+              key: 'bareos.getstatus[{#CLIENT}]'
+              delay: '12h;2m/1-7,8:30-8:40'
+              trends: '0'
+              value_type: TEXT
+              trigger_prototypes:
+                -
+                  uuid: 82c81a075df64396b5c2fca99511e49f
+                  expression: 'last(/BareOS Template/bareos.getstatus[{#CLIENT}])<>"T"'
+                  name: '{#CLIENT} Failed backup'
+                  priority: HIGH
+                  manual_close: 'YES'
